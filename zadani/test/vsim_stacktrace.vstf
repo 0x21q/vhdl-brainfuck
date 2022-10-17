@@ -1,0 +1,40 @@
+# Current time Mon Oct 17 19:33:15 2022
+# Program = vsim
+# Id = "2022.3"
+# Version = "2022.07"
+# Date = "Jul 18 2022"
+# Platform = "linux_x86_64"
+# Signature = 61b6935bcc30401d7dcfa7346a46e03c
+# --> START OF USERCODE
+# 0    0x00007fffec2187ad: 'gpi_get_simulator_product + 0x000000000000000d' in '/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/projekt-env/lib/python3.8/site-packages/cocotb/libs/libgpi.so'
+# 1    0x00007ffff7ff0b22: '_ZL21get_simulator_productP7_objectS0_ + 0x0000000000000012' in '/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/projekt-env/lib/python3.8/site-packages/cocotb/simulator.cpython-38-x86_64-linux-gnu.so'
+# 2    0x00007fffebb58bce: 'cfunction_vectorcall_NOARGS + 0x000000000000006e' in '/usr/local/lib/libpython3.8.so'
+# 3    0x00007fffebb9c453: '_PyEval_EvalFrameDefault + 0x0000000000004743' in '/usr/local/lib/libpython3.8.so'
+# 4    0x00007fffebb2bf01: '_PyFunction_Vectorcall + 0x00000000000000c1' in '/usr/local/lib/libpython3.8.so'
+# 5    0x00007fffebb981c9: '_PyEval_EvalFrameDefault + 0x00000000000004b9' in '/usr/local/lib/libpython3.8.so'
+# 6    0x00007fffebb2bf01: '_PyFunction_Vectorcall + 0x00000000000000c1' in '/usr/local/lib/libpython3.8.so'
+# 7    0x00007fffebb2bce7: 'object_vacall + 0x0000000000000267' in '/usr/local/lib/libpython3.8.so'
+# 8    0x00007fffebb2ba71: 'PyObject_CallFunctionObjArgs + 0x0000000000000091' in '/usr/local/lib/libpython3.8.so'
+# 9    0x00007fffec1d2bb1: '_embed_sim_init + 0x00000000000002c1' in '/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/projekt-env/lib/python3.8/site-packages/cocotb/libs/libcocotb.so'
+# 10   0x00007fffec2186f9: '_Z14gpi_embed_initiPKPKc + 0x0000000000000009' in '/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/projekt-env/lib/python3.8/site-packages/cocotb/libs/libgpi.so'
+# 11   0x00007ffff7fd3eb4: '_ZN15FliStartupCbHdl12run_callbackEv + 0x0000000000000144' in '/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/projekt-env/lib/python3.8/site-packages/cocotb/libs/libcocotbfli_modelsim.so'
+# 12   0x00007ffff7fd3417: 'handle_fli_callback + 0x00000000000000a7' in '/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/projekt-env/lib/python3.8/site-packages/cocotb/libs/libcocotbfli_modelsim.so'
+# <-- END OF USERCODE
+# 13   0x0000000000a94c5f: '<unknown (@0xa94c5f)>'
+# 14   0x0000000000ee2104: '<unknown (@0xee2104)>'
+# 15   0x0000000000f446bb: '<unknown (@0xf446bb)>'
+# 16   0x0000000000f46edd: '<unknown (@0xf46edd)>'
+# 17   0x0000000003aa87cd: '<unknown (@0x3aa87cd)>'
+# 18   0x0000000003aacc26: '<unknown (@0x3aacc26)>'
+# 19   0x0000000003aae311: '<unknown (@0x3aae311)>'
+# 20   0x0000000003aae676: '<unknown (@0x3aae676)>'
+# 21   0x00000000011d1929: '<unknown (@0x11d1929)>'
+# 22   0x0000000003b4e57f: '<unknown (@0x3b4e57f)>'
+# 23   0x0000000003ba20f7: '<unknown (@0x3ba20f7)>'
+# 24   0x0000000003b64fe7: '<unknown (@0x3b64fe7)>'
+# 25   0x0000000003b652c9: '<unknown (@0x3b652c9)>'
+# 26   0x000000000393a5fd: '<unknown (@0x393a5fd)>'
+# 27   0x0000000000c2c0dc: '<unknown (@0xc2c0dc)>'
+# End of Stack Trace
+
+
