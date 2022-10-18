@@ -138,7 +138,7 @@ entity fsm is
     IN_RDATA      : in std_logic_vector(7 downto 0);
 
     -- vystupni port
-    OUT_REQ       : out std_logic;
+    IN_REQ       : out std_logic;
     OUT_DATA      : out std_logic_vector(7 downto 0);
     OUT_WE        : out std_logic;
     OUT_INC_CNT   : out std_logic;
@@ -237,11 +237,11 @@ begin
       EN    => EN, 
       -- vstupni port
       IN_VLD    => IN_VLD,
-      OUT_BUSY   => OUT_BUSY,
+      OUT_BUSY  => OUT_BUSY,
       IN_CNT    => cnt_val, 
       IN_RDATA  => DATA_RDATA,
       -- vystupni port
-      OUT_REQ       => IN_REQ,
+      IN_REQ        => IN_REQ,
       OUT_DATA      => OUT_DATA,
       OUT_WE        => OUT_WE,
       OUT_INC_CNT   => inc_cnt,
@@ -324,9 +324,23 @@ begin
 end dataflow;
 
 architecture behavioral of fsm is
-  type fsm_state is (sIdle, sFetch, sDecode, sInc_ptr, sDec_ptr, 
-  sInc_data0, sInc_data1, sDec_data0, sDec_data1, sLeft_sq, sRight_sq, sLeft_pa, 
-  sRight_pa, sPrint_data0, sPrint_data1, sPrint_data2, sLoad_save, sHalt, sOther);
+  type fsm_state is (
+    sIdle, 
+    sFetch,
+    sDecode, 
+    sInc_ptr, 
+    sDec_ptr, 
+    sInc_data0, sInc_data1, 
+    sDec_data0, sDec_data1, 
+    sLeft_sq0, sLeft_sq1, sLeft_sq2, sLeft_sq3,
+    sRight_sq0, sRight_sq1, sRight_sq2, sRight_sq3, sRight_sq4, 
+    sLeft_pa0, 
+    sRight_pa0, sRight_pa1, sRight_pa2, sRight_pa3, sRight_pa4, 
+    sPrint_data0, sPrint_data1, sPrint_data2, 
+    sLoad_save0, sLoad_save1, 
+    sHalt,
+    sOther
+    );
   signal pstate   : fsm_state;
   signal nstate   : fsm_state;
 begin
@@ -341,8 +355,8 @@ begin
 
   nstate_lgc: process(pstate, IN_VLD, OUT_BUSY, IN_CNT, IN_RDATA)
   begin
-    OUT_REQ       <= '0';   
-    OUT_DATA      <= "00000000";
+    IN_REQ       <= '0';   
+    OUT_DATA      <= x"00";
     OUT_WE        <= '0';
     OUT_INC_CNT   <= '0';
     OUT_DEC_CNT   <= '0';
@@ -375,33 +389,36 @@ begin
           when x"2D" =>            -- "-"
             nstate <= sDec_data0;
           when x"5B" =>            -- "["
-            nstate <= sLeft_sq;
+            nstate <= sLeft_sq0;
           when x"5D" =>            -- "]"
-            nstate <= sRight_sq;
+            nstate <= sRight_sq0;
           when x"28" =>            -- "("
-            nstate <= sLeft_pa;
+            nstate <= sLeft_pa0;
           when x"29" =>            -- ")"
-            nstate <= sRight_pa;
+            nstate <= sRight_pa0;
           when x"2E" =>            -- "."
             nstate <= sPrint_data0;  
           when x"2C" =>            -- ","
-            nstate <= sLoad_save;
+            nstate <= sLoad_save0;
           when x"00" =>            -- null
             nstate <= sHalt;
           when others =>           -- ostatni
             nstate <= sOther;
         end case;
       
+      -- ">"
       when sInc_ptr =>
         nstate <= sFetch;
         OUT_INC_PTR <= '1';
         OUT_INC_PC <= '1';
 
+      -- "<"
       when sDec_ptr =>
         nstate <= sFetch;
         OUT_DEC_PTR <= '1';
         OUT_INC_PC <= '1';
       
+      -- "+"
       when sInc_data0 =>
         nstate <= sInc_data1;
         OUT_SEL_MX1 <= '1';
@@ -415,6 +432,7 @@ begin
         OUT_DATA_RDWR <= '1';
         OUT_INC_PC <= '1';
 
+      -- "-"
       when sDec_data0 =>
         nstate <= sDec_data1;
         OUT_SEL_MX1 <= '1';
@@ -428,22 +446,99 @@ begin
         OUT_DATA_RDWR <= '1';
         OUT_INC_PC <= '1';
 
-      when sLeft_sq =>
-        nstate <= sFetch;
+      -- "["
+      when sLeft_sq0 =>
+        nstate <= sLeft_sq1;
         OUT_INC_PC <= '1';
-        
-      when sRight_sq =>
+        OUT_SEL_MX1 <= '1';
+        OUT_DATA_EN <= '1';
+
+      when sLeft_sq1 =>
+        if IN_RDATA = x"00" then
+          nstate <= sLeft_sq2;
+        else 
+          nstate <= sFetch;
+        end if;
+      
+      when sLeft_sq2 =>
+          nstate <= sLeft_sq3;
+          OUT_SEL_MX1 <= '0';
+          OUT_DATA_EN <= '1';
+          OUT_INC_PC <= '1';
+
+      when sLeft_sq3 =>
+        if IN_RDATA = x"5D" then
+          nstate <= sFetch;
+        else
+          nstate <= sLeft_sq2;
+        end if;
+
+      -- "]"
+      when sRight_sq0 =>
+        nstate <= sRight_sq1;
+        OUT_SEL_MX1 <= '1';
+        OUT_DATA_EN <= '1';
+
+      when sRight_sq1 =>
+        if IN_RDATA /= x"00" then
+          nstate <= sRight_sq2;
+        else 
+          nstate <= sRight_sq4;
+        end if;
+      
+      when sRight_sq2 =>
+        nstate <= sRight_sq3;
+        OUT_DEC_PC <= '1';
+        OUT_SEL_MX1 <= '0';
+        OUT_DATA_EN <= '1';
+
+      when sRight_sq3 =>
+        if IN_RDATA = x"5B" then
+          nstate <= sRight_sq4;
+        else
+          nstate <= sRight_sq2;
+        end if;
+
+      when sRight_sq4 =>
         nstate <= sFetch;
         OUT_INC_PC <= '1';
 
-      when sLeft_pa =>
-        nstate <= sFetch;
-        OUT_INC_PC <= '1';
-        
-      when sRight_pa =>
+      -- "("
+      when sLeft_pa0 =>
         nstate <= sFetch;
         OUT_INC_PC <= '1';
 
+      -- ")"
+      when sRight_pa0 =>
+        nstate <= sRight_pa1;
+        OUT_SEL_MX1 <= '1';
+        OUT_DATA_EN <= '1';
+
+      when sRight_pa1 =>
+        if IN_RDATA /= x"00" then
+          nstate <= sRight_pa2;
+        else
+          nstate <= sRight_pa4;
+        end if;
+
+      when sRight_pa2 =>
+        nstate <= sRight_pa3;
+        OUT_DEC_PC <= '1';
+        OUT_SEL_MX1 <= '0';
+        OUT_DATA_EN <= '1';
+
+      when sRight_pa3 =>
+        if IN_RDATA = x"28" then
+          nstate <= sRight_pa4;
+        else
+          nstate <= sRight_pa2;
+        end if;
+      
+      when sRight_pa4 =>
+        nstate <= sFetch;
+        OUT_INC_PC <= '1';
+
+      -- "."
       when sPrint_data0 =>
         if OUT_BUSY = '1' then
           nstate <= sPrint_data0;
@@ -462,18 +557,28 @@ begin
         OUT_DATA <= IN_RDATA;
         OUT_INC_PC <= '1';
 
-      when sLoad_save =>
+      -- ","
+      when sLoad_save0 =>
+        IN_REQ <= '1';
+        if IN_VLD = '0' then
+          nstate <= sLoad_save0;
+        else
+          nstate <= sLoad_save1;
+        end if;
+
+      when sLoad_save1 =>
         nstate <= sFetch;
-        OUT_REQ <= '1';
-        OUT_DATA_EN   <= '1';
-        OUT_DATA_RDWR <= '1';
         OUT_SEL_MX1   <= '1';
         OUT_SEL_MX2   <= "00";
+        OUT_DATA_EN   <= '1';
+        OUT_DATA_RDWR <= '1';
         OUT_INC_PC <= '1';
 
+      -- null
       when sHalt =>
         nstate <= sHalt;
       
+      -- ostatni
       when sOther =>
         nstate <= sFetch;
         OUT_INC_PC <= '1';
@@ -481,4 +586,3 @@ begin
     end case;  
   end process;
 end behavioral;
-

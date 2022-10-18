@@ -107,6 +107,12 @@ async def test_printf(dut):
     instcnt, mem, lcd = await run_program(dut, prog, kb_data=chr(123), timeout_ns = 1_000_000)
     assert lcd == '123', "Invalid output"
 
+@tb_test()
+async def test_do_loop_infinity(dut):
+    """Simple do-while loop test"""
+    instcnt, mem, lcd = await run_program(dut, '(-+-)', mem_data='\5', timeout_ns = LCD_WAIT_TIME*10)
+    assert mem[RAM_OFS] == 0
+
 
 
 if __name__=="__main__":

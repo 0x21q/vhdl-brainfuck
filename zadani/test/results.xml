@@ -1,22 +1,6 @@
 <testsuites name="results">
   <testsuite name="all" package="all">
-    <property name="random_seed" value="1666044001" />
-    <testcase name="test_reset" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="10" time="0.0030982494354248047" sim_time_ns="50.000001" ratio_time="16138.145763316967" />
-    <testcase name="test_increment" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="24" time="0.026160478591918945" sim_time_ns="690.000001" ratio_time="26375.664289763536" />
-    <testcase name="test_decrement" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="32" time="0.025945186614990234" sim_time_ns="690.0000010000001" ratio_time="26594.528350832592" />
-    <testcase name="test_move" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="40" time="0.023385286331176758" sim_time_ns="640.0000009999999" ratio_time="27367.635868831152" />
-    <testcase name="test_print" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="48" time="0.053585052490234375" sim_time_ns="1680.0000009999999" ratio_time="31352.026785943188" />
-    <testcase name="test_input" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="55" time="0.022716283798217773" sim_time_ns="660.0000010000003" ratio_time="29054.048050402558">
-      <failure />
-    </testcase>
-    <testcase name="test_while_loop" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="65" time="0.02525782585144043" sim_time_ns="720.0000009999994" ratio_time="28506.016520774236">
-      <failure />
-    </testcase>
-    <testcase name="test_do_loop" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="72" time="0.024206876754760742" sim_time_ns="670.0000010000003" ratio_time="27678.08535515562">
-      <failure />
-    </testcase>
-    <testcase name="test_login_xkrato67" classname="cpu" file="&lt;makefun-gen-1&gt;" lineno="1" time="0.7386398315429688" sim_time_ns="19930.000001" ratio_time="26982.027166565844">
-      <failure />
-    </testcase>
+    <property name="random_seed" value="1666128083" />
+    <testcase name="test_do_loop_infinity" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="110" time="0.07828187942504883" sim_time_ns="1970.000001" ratio_time="25165.466331019572" />
   </testsuite>
 </testsuites>
