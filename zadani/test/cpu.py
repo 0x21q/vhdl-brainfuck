@@ -95,11 +95,10 @@ async def test_login(dut, uid=''):
 
 
 #Odkomentujte jeden z nasledujicich radku pro zarazeni do testu
-#@tb_test(skip=True) #test se nespousti automaticky, spustit lze volanim TESTCASE=test_printf make
+@tb_test() #test se nespousti automaticky, spustit lze volanim TESTCASE=test_printf make
 #@tb_test() #test se spousti automaticky
 async def test_printf(dut):
     """Program which emulates printing of %d """
-
     #Priklad testu, ktery provede pozadovany program:
     #Program ocekava vstup z klavesnice, v testu je stisknuta klavesa odpovidajici hodnote 123
     prog = ',#load value and print#[>>+>+<<<-]>>>[<<<+>>>-]<<+>[<->[>++++++++++<[->-[>+>>]>[+[-<+>]>+>>]<<<<<]>[-]++++++++[<++++++>-]>[<<+>>-]>[<<+>>-]<<]>]<[->>++++++++[<++++++>-]]<[.[-]<]<'
@@ -108,9 +107,33 @@ async def test_printf(dut):
     assert lcd == '123', "Invalid output"
 
 @tb_test()
-async def test_do_loop_infinity(dut):
-    """Simple do-while loop test"""
-    instcnt, mem, lcd = await run_program(dut, '(-+-)', mem_data='\5', timeout_ns = LCD_WAIT_TIME*10)
+async def test_while_nested(dut):
+    """Program which tests nested while loops"""
+    prog = '[[[[-]]]]'
+    enableDebug(lcd=True)
+    instcnt, mem, lcd = await run_program(dut, prog, mem_data="\5", timeout_ns=100_000)
+    assert mem[RAM_OFS] == 0
+
+@tb_test()
+async def test_hello(dut):
+    """Program which prints 'Hello'"""
+    prog = '+++++++++[>++++++++>+++++++++++<<-]>.>++.+++++++..+++.'
+    enableDebug(lcd=True)
+    instcnt, mem, lcd = await run_program(dut, prog, mem_data="\0", timeout_ns=50_000)
+    assert lcd == 'Hello', "Invalid input"
+
+@tb_test()
+async def test_abc(dut):
+    """Program which prints '123abc321'"""
+    prog = '+++++++++[>+++++>+++++++++++<<-]>++++.+.+.>--.+.+.<.-.-.'
+    enableDebug(lcd=True)
+    instcnt, mem, lcd = await run_program(dut, prog, mem_data="\0", timeout_ns=50_000)
+    assert lcd == '123abc321', "Invalid input"
+
+@tb_test()
+async def test_do_loop_complex(dut):
+    """Complex do-while loop test"""
+    instcnt, mem, lcd = await run_program(dut, '++++++++++++++++++++++++++++++++++++(-)', mem_data='\100', timeout_ns = LCD_WAIT_TIME*100)
     assert mem[RAM_OFS] == 0
 
 

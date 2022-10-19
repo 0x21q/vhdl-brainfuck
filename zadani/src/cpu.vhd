@@ -49,7 +49,7 @@ entity cnt is
     IN_INC  : in std_logic;
     IN_DEC  : in std_logic;
     -- vystupni port
-    OUT_CNT : out std_logic_vector(10 downto 0)
+    OUT_CNT : out std_logic_vector(7 downto 0)
   );
 end cnt;
 
@@ -134,7 +134,7 @@ entity fsm is
     -- vstupni port
     IN_VLD        : in std_logic;
     OUT_BUSY       : in std_logic;
-    IN_CNT        : in std_logic_vector(10 downto 0);
+    IN_CNT        : in std_logic_vector(7 downto 0);
     IN_RDATA      : in std_logic_vector(7 downto 0);
 
     -- vystupni port
@@ -159,7 +159,7 @@ end fsm;
 -- ----------------------------------------------------------------------------
 architecture behavioral of cpu is
   -- CNT
-  signal cnt_val  : std_logic_vector(10 downto 0);
+  signal cnt_val  : std_logic_vector(7 downto 0);
   signal inc_cnt  : std_logic;
   signal dec_cnt  : std_logic;
   -- PC
@@ -258,12 +258,12 @@ begin
 end behavioral;
 
 architecture behavioral of cnt is
-  signal cnt_val: std_logic_vector(10 downto 0);
+  signal cnt_val: std_logic_vector(7 downto 0);
 begin
   cnt: process(CLK, RESET)
   begin
     if RESET = '1' then
-      cnt_val <= "00000000000";
+      cnt_val <= x"00";
     elsif rising_edge(CLK) then
       if IN_INC = '1' then
         cnt_val <= cnt_val + 1;
@@ -332,8 +332,8 @@ architecture behavioral of fsm is
     sDec_ptr, 
     sInc_data0, sInc_data1, 
     sDec_data0, sDec_data1, 
-    sLeft_sq0, sLeft_sq1, sLeft_sq2, sLeft_sq3,
-    sRight_sq0, sRight_sq1, sRight_sq2, sRight_sq3, sRight_sq4, 
+    sLeft_sq0, sLeft_sq1, sLeft_sq2, sLeft_sq3, sLeft_sq4,
+    sRight_sq0, sRight_sq1, sRight_sq2, sRight_sq3, sRight_sq4,
     sLeft_pa0, 
     sRight_pa0, sRight_pa1, sRight_pa2, sRight_pa3, sRight_pa4, 
     sPrint_data0, sPrint_data1, sPrint_data2, 
@@ -405,7 +405,7 @@ begin
           when others =>           -- ostatni
             nstate <= sOther;
         end case;
-      
+
       -- ">"
       when sInc_ptr =>
         nstate <= sFetch;
@@ -446,7 +446,6 @@ begin
         OUT_DATA_RDWR <= '1';
         OUT_INC_PC <= '1';
 
-      -- "["
       when sLeft_sq0 =>
         nstate <= sLeft_sq1;
         OUT_INC_PC <= '1';
@@ -456,52 +455,72 @@ begin
       when sLeft_sq1 =>
         if IN_RDATA = x"00" then
           nstate <= sLeft_sq2;
+          OUT_INC_CNT <= '1';
         else 
           nstate <= sFetch;
         end if;
       
       when sLeft_sq2 =>
+        if IN_CNT /= x"00" then 
           nstate <= sLeft_sq3;
           OUT_SEL_MX1 <= '0';
           OUT_DATA_EN <= '1';
-          OUT_INC_PC <= '1';
-
-      when sLeft_sq3 =>
-        if IN_RDATA = x"5D" then
-          nstate <= sFetch;
         else
-          nstate <= sLeft_sq2;
+          nstate <= sFetch;
         end if;
 
-      -- "]"
+      when sLeft_sq3 =>
+        nstate <= sLeft_sq4;
+        if IN_RDATA = x"5B" then
+          OUT_INC_CNT <= '1';
+        elsif IN_RDATA = x"5D" then
+          OUT_DEC_CNT <= '1';
+        end if;
+
+      when Sleft_sq4 =>
+        nstate <= sLeft_sq2;
+        OUT_INC_PC <= '1';
+
       when sRight_sq0 =>
         nstate <= sRight_sq1;
         OUT_SEL_MX1 <= '1';
         OUT_DATA_EN <= '1';
 
       when sRight_sq1 =>
-        if IN_RDATA /= x"00" then
-          nstate <= sRight_sq2;
+        if IN_RDATA = x"00" then
+          nstate <= sFetch;
+          OUT_INC_PC <= '1';
         else 
-          nstate <= sRight_sq4;
+          nstate <= sRight_sq2;
+          OUT_INC_CNT <= '1';
+          OUT_DEC_PC <= '1';
         end if;
-      
+
       when sRight_sq2 =>
         nstate <= sRight_sq3;
-        OUT_DEC_PC <= '1';
-        OUT_SEL_MX1 <= '0';
-        OUT_DATA_EN <= '1';
+        if IN_CNT /= x"00" then
+          nstate <= sRight_sq3;
+          OUT_SEL_MX1 <= '0';
+          OUT_DATA_EN <= '1';
+        else
+          nstate <= sFetch;
+        end if;
 
       when sRight_sq3 =>
-        if IN_RDATA = x"5B" then
-          nstate <= sRight_sq4;
-        else
-          nstate <= sRight_sq2;
+        nstate <= sRight_sq4;
+        if IN_RDATA = x"5D" then
+          OUT_INC_CNT <= '1';
+        elsif IN_RDATA = x"5B" then
+          OUT_DEC_CNT <= '1';
         end if;
 
       when sRight_sq4 =>
-        nstate <= sFetch;
-        OUT_INC_PC <= '1';
+        nstate <= sRight_sq2;
+        if IN_CNT = x"00" then
+          OUT_INC_PC <= '1';
+        else
+          OUT_DEC_PC <= '1';
+        end if;
 
       -- "("
       when sLeft_pa0 =>

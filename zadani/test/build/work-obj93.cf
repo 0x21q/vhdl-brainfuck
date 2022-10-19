@@ -1,16 +1,16 @@
 v 4
-file "/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/" "../src/cpu.vhd" "a7848f60339218da80793d2be6661dd2cfed5f42" "20221018212123.530":
+file "/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/" "../src/cpu.vhd" "070e8822a7773f35b0e1574bff630850f77d3502" "20221019182122.635":
   entity cpu at 6( 225) + 0 on 11;
   entity cnt at 39( 1757) + 0 on 12;
-  entity pc at 56( 2100) + 0 on 13;
-  entity ptr at 73( 2438) + 0 on 14;
-  entity mx1 at 90( 2780) + 0 on 15;
-  entity mx2 at 106( 3144) + 0 on 16;
-  entity fsm at 123( 3576) + 0 on 17;
-  architecture behavioral of cpu at 160( 4718) + 0 on 18;
-  architecture behavioral of cnt at 260( 7069) + 0 on 19;
-  architecture behavioral of pc at 278( 7482) + 0 on 20;
-  architecture behavioral of ptr at 296( 7887) + 0 on 21;
-  architecture dataflow of mx1 at 314( 8302) + 0 on 22;
-  architecture dataflow of mx2 at 319( 8414) + 0 on 23;
-  architecture behavioral of fsm at 326( 8622) + 0 on 24;
+  entity pc at 56( 2099) + 0 on 13;
+  entity ptr at 73( 2437) + 0 on 14;
+  entity mx1 at 90( 2779) + 0 on 15;
+  entity mx2 at 106( 3143) + 0 on 16;
+  entity fsm at 123( 3575) + 0 on 17;
+  architecture behavioral of cpu at 160( 4716) + 0 on 18;
+  architecture behavioral of cnt at 260( 7066) + 0 on 19;
+  architecture behavioral of pc at 278( 7470) + 0 on 20;
+  architecture behavioral of ptr at 296( 7875) + 0 on 21;
+  architecture dataflow of mx1 at 314( 8290) + 0 on 22;
+  architecture dataflow of mx2 at 319( 8402) + 0 on 23;
+  architecture behavioral of fsm at 326( 8610) + 0 on 24;

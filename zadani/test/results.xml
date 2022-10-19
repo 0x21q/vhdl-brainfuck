@@ -1,6 +1,22 @@
 <testsuites name="results">
   <testsuite name="all" package="all">
-    <property name="random_seed" value="1666128083" />
-    <testcase name="test_do_loop_infinity" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="110" time="0.07828187942504883" sim_time_ns="1970.000001" ratio_time="25165.466331019572" />
+    <property name="random_seed" value="1666203585" />
+    <testcase name="test_reset" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="10" time="0.0030736923217773438" sim_time_ns="50.000001" ratio_time="16267.08068525473" />
+    <testcase name="test_increment" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="24" time="0.0257720947265625" sim_time_ns="690.000001" ratio_time="26773.143910915336" />
+    <testcase name="test_decrement" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="32" time="0.02553582191467285" sim_time_ns="690.0000010000001" ratio_time="27020.86517150744" />
+    <testcase name="test_move" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="40" time="0.02294015884399414" sim_time_ns="640.0000009999999" ratio_time="27898.673472679784" />
+    <testcase name="test_print" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="48" time="0.05326652526855469" sim_time_ns="1680.0000009999999" ratio_time="31539.508021781356" />
+    <testcase name="test_input" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="55" time="0.12261652946472168" sim_time_ns="3320.0000010000003" ratio_time="27076.28421301229" />
+    <testcase name="test_while_loop" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="65" time="0.05998635292053223" sim_time_ns="1800.0000010000003" ratio_time="30006.82510878059" />
+    <testcase name="test_do_loop" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="72" time="0.03868389129638672" sim_time_ns="1050.0000010000003" ratio_time="27143.081158902853" />
+    <testcase name="test_login_xkrato67" classname="cpu" file="&lt;makefun-gen-1&gt;" lineno="1" time="1.3865551948547363" sim_time_ns="36310.000001" ratio_time="26187.201299840104" />
+    <testcase name="test_printf" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="98" time="17.93735647201538" sim_time_ns="498790.00000099995" ratio_time="27807.330516019876" />
+    <testcase name="test_while_nested" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="109" time="0.05118393898010254" sim_time_ns="1530.0000010000076" ratio_time="29892.189454093917" />
+    <testcase name="test_hello" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="117" time="0.6061980724334717" sim_time_ns="17890.000001000008" ratio_time="29511.806148085994" />
+    <testcase name="test_bf_nested" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="125" time="33.535658836364746" sim_time_ns="1000055.0000010001" ratio_time="29820.64568585663">
+      <failure />
+    </testcase>
+    <testcase name="test_abc" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="133" time="0.5816442966461182" sim_time_ns="18370.000001000008" ratio_time="31582.876522515984" />
+    <testcase name="test_do_loop_complex" classname="cpu" file="/homes/eva/xk/xkrato67/Predmety/inp/inp22-projekt1/zadani/test/cpu_lib.py" lineno="141" time="0.6516177654266357" sim_time_ns="19950.000001000008" ratio_time="30616.10818412552" />
   </testsuite>
 </testsuites>
