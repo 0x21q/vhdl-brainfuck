@@ -94,6 +94,7 @@ use ieee.std_logic_unsigned.all;
 
 entity mx1 is
   port (
+    -- ridici port
     SEL : in std_logic;
     -- vstupni port
     IN_DATA_PC   : in std_logic_vector(12 downto 0);
@@ -110,6 +111,7 @@ use ieee.std_logic_unsigned.all;
 
 entity mx2 is
   port (
+    -- ridici port
     SEL : in std_logic_vector(1 downto 0);
     -- vstupni port
     IN_DATA      : in std_logic_vector(7 downto 0);
@@ -125,6 +127,36 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.all;
 use ieee.std_logic_unsigned.all;
 
+entity cmp_zero is
+  port (
+    -- vstupni port
+    IN_DATA : in std_logic_vector(7 downto 0);
+    -- vystupni port
+    OUT_CMP : out std_logic
+  );
+end cmp_zero;
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_unsigned.all;
+
+entity bridge is
+  port (
+    -- ridici port
+    EN       : in std_logic; 
+    -- vstupni port
+    IN_DATA  : in std_logic_vector(7 downto 0);
+    -- vystupni port
+    OUT_DATA : out std_logic_vector(7 downto 0)
+  );
+end bridge;
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_unsigned.all;
+
 entity fsm is
   port (
     CLK   : in std_logic;
@@ -133,13 +165,13 @@ entity fsm is
 
     -- vstupni port
     IN_VLD        : in std_logic;
-    OUT_BUSY       : in std_logic;
-    IN_CNT        : in std_logic_vector(7 downto 0);
+    OUT_BUSY      : in std_logic;
+    IN_CNT        : in std_logic;
     IN_RDATA      : in std_logic_vector(7 downto 0);
 
     -- vystupni port
-    IN_REQ       : out std_logic;
-    OUT_DATA      : out std_logic_vector(7 downto 0);
+    IN_REQ        : out std_logic;
+    OUT_EN_BRG : out std_logic;
     OUT_WE        : out std_logic;
     OUT_INC_CNT   : out std_logic;
     OUT_DEC_CNT   : out std_logic;
@@ -174,6 +206,10 @@ architecture behavioral of cpu is
   signal sel_mx1  : std_logic;
   -- MX2
   signal sel_mx2  : std_logic_vector(1 downto 0);
+  -- CMP
+  signal cmp_cnt  : std_logic;
+  -- BRIDGE
+  signal en_brg   : std_logic;
   
 begin
   i_cnt : entity work.cnt(behavioral)
@@ -230,6 +266,19 @@ begin
       OUT_MX2 => DATA_WDATA
     );
 
+  i_cmp_cnt : entity work.cmp_zero(dataflow)
+    port map(
+      IN_DATA => cnt_val,
+      OUT_CMP => cmp_cnt
+    );
+
+  i_bridge : entity work.bridge(dataflow)
+    port map(
+      IN_DATA   => DATA_RDATA, 
+      OUT_DATA  => OUT_DATA,
+      EN        => en_brg
+    );
+
   i_fsm : entity work.fsm(behavioral)
     port map (
       CLK   => CLK,
@@ -238,12 +287,12 @@ begin
       -- vstupni port
       IN_VLD    => IN_VLD,
       OUT_BUSY  => OUT_BUSY,
-      IN_CNT    => cnt_val, 
+      IN_CNT    => cmp_cnt, 
       IN_RDATA  => DATA_RDATA,
       -- vystupni port
       IN_REQ        => IN_REQ,
-      OUT_DATA      => OUT_DATA,
       OUT_WE        => OUT_WE,
+      OUT_EN_BRG    => en_brg,
       OUT_INC_CNT   => inc_cnt,
       OUT_DEC_CNT   => dec_cnt,
       OUT_INC_PC    => inc_pc, 
@@ -323,6 +372,16 @@ begin
              IN_DATA_INC + 1  when (SEL = "10");
 end dataflow;
 
+architecture dataflow of cmp_zero is
+begin
+  OUT_CMP <= '1' when (IN_DATA = x"00") else '0';
+end dataflow;
+
+architecture dataflow of bridge is
+begin
+  OUT_DATA <= IN_DATA when (EN = '1');
+end dataflow;
+
 architecture behavioral of fsm is
   type fsm_state is (
     sIdle, 
@@ -355,8 +414,8 @@ begin
 
   nstate_lgc: process(pstate, IN_VLD, OUT_BUSY, IN_CNT, IN_RDATA)
   begin
-    IN_REQ       <= '0';   
-    OUT_DATA      <= x"00";
+    IN_REQ        <= '0';   
+    OUT_EN_BRG    <= '0';
     OUT_WE        <= '0';
     OUT_INC_CNT   <= '0';
     OUT_DEC_CNT   <= '0';
@@ -446,6 +505,7 @@ begin
         OUT_DATA_RDWR <= '1';
         OUT_INC_PC <= '1';
 
+      -- "["
       when sLeft_sq0 =>
         nstate <= sLeft_sq1;
         OUT_INC_PC <= '1';
@@ -461,7 +521,7 @@ begin
         end if;
       
       when sLeft_sq2 =>
-        if IN_CNT /= x"00" then 
+        if IN_CNT /= '1' then 
           nstate <= sLeft_sq3;
           OUT_SEL_MX1 <= '0';
           OUT_DATA_EN <= '1';
@@ -481,6 +541,7 @@ begin
         nstate <= sLeft_sq2;
         OUT_INC_PC <= '1';
 
+      -- "]"
       when sRight_sq0 =>
         nstate <= sRight_sq1;
         OUT_SEL_MX1 <= '1';
@@ -497,8 +558,7 @@ begin
         end if;
 
       when sRight_sq2 =>
-        nstate <= sRight_sq3;
-        if IN_CNT /= x"00" then
+        if IN_CNT /= '1' then
           nstate <= sRight_sq3;
           OUT_SEL_MX1 <= '0';
           OUT_DATA_EN <= '1';
@@ -516,7 +576,7 @@ begin
 
       when sRight_sq4 =>
         nstate <= sRight_sq2;
-        if IN_CNT = x"00" then
+        if IN_CNT = '1' then
           OUT_INC_PC <= '1';
         else
           OUT_DEC_PC <= '1';
@@ -534,28 +594,39 @@ begin
         OUT_DATA_EN <= '1';
 
       when sRight_pa1 =>
-        if IN_RDATA /= x"00" then
+        if IN_RDATA = x"00" then
+          nstate <= sFetch;
+          OUT_INC_PC <= '1';
+        else 
           nstate <= sRight_pa2;
-        else
-          nstate <= sRight_pa4;
+          OUT_INC_CNT <= '1';
+          OUT_DEC_PC <= '1';
         end if;
 
       when sRight_pa2 =>
-        nstate <= sRight_pa3;
-        OUT_DEC_PC <= '1';
-        OUT_SEL_MX1 <= '0';
-        OUT_DATA_EN <= '1';
+        if IN_CNT /= '1' then
+          nstate <= sRight_pa3;
+          OUT_SEL_MX1 <= '0';
+          OUT_DATA_EN <= '1';
+        else
+          nstate <= sFetch;
+        end if;
 
       when sRight_pa3 =>
-        if IN_RDATA = x"28" then
-          nstate <= sRight_pa4;
-        else
-          nstate <= sRight_pa2;
+        nstate <= sRight_pa4;
+        if IN_RDATA = x"29" then
+          OUT_INC_CNT <= '1';
+        elsif IN_RDATA = x"28" then
+          OUT_DEC_CNT <= '1';
         end if;
-      
+
       when sRight_pa4 =>
-        nstate <= sFetch;
-        OUT_INC_PC <= '1';
+        nstate <= sRight_pa2;
+        if IN_CNT = '1' then
+          OUT_INC_PC <= '1';
+        else
+          OUT_DEC_PC <= '1';
+        end if;
 
       -- "."
       when sPrint_data0 =>
@@ -573,7 +644,7 @@ begin
       when sPrint_data2 =>
         nstate <= sFetch;
         OUT_WE <= '1';
-        OUT_DATA <= IN_RDATA;
+        OUT_EN_BRG <= '1';
         OUT_INC_PC <= '1';
 
       -- ","

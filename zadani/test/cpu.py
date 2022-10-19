@@ -93,7 +93,6 @@ async def test_login(dut, uid=''):
 # V teto casti muzete v pripade potreby vlozit jakekoliv vlastni testy. 
 #-------------------------------------------------------------------------------------------------------
 
-
 #Odkomentujte jeden z nasledujicich radku pro zarazeni do testu
 @tb_test() #test se nespousti automaticky, spustit lze volanim TESTCASE=test_printf make
 #@tb_test() #test se spousti automaticky
@@ -109,34 +108,26 @@ async def test_printf(dut):
 @tb_test()
 async def test_while_nested(dut):
     """Program which tests nested while loops"""
-    prog = '[[[[-]]]]'
+    prog = '[[[[[-]]]]]'
     enableDebug(lcd=True)
     instcnt, mem, lcd = await run_program(dut, prog, mem_data="\5", timeout_ns=100_000)
     assert mem[RAM_OFS] == 0
 
 @tb_test()
-async def test_hello(dut):
-    """Program which prints 'Hello'"""
-    prog = '+++++++++[>++++++++>+++++++++++<<-]>.>++.+++++++..+++.'
+async def test_do_while_nested(dut):
+    """Program which tests nested do-while loops"""
+    prog = '(((((-)))))'
     enableDebug(lcd=True)
-    instcnt, mem, lcd = await run_program(dut, prog, mem_data="\0", timeout_ns=50_000)
-    assert lcd == 'Hello', "Invalid input"
+    instcnt, mem, lcd = await run_program(dut, prog, mem_data="\5", timeout_ns=100_000)
+    assert mem[RAM_OFS] == 0
 
 @tb_test()
-async def test_abc(dut):
+async def test_print_longer(dut):
     """Program which prints '123abc321'"""
     prog = '+++++++++[>+++++>+++++++++++<<-]>++++.+.+.>--.+.+.<.-.-.'
     enableDebug(lcd=True)
     instcnt, mem, lcd = await run_program(dut, prog, mem_data="\0", timeout_ns=50_000)
     assert lcd == '123abc321', "Invalid input"
-
-@tb_test()
-async def test_do_loop_complex(dut):
-    """Complex do-while loop test"""
-    instcnt, mem, lcd = await run_program(dut, '++++++++++++++++++++++++++++++++++++(-)', mem_data='\100', timeout_ns = LCD_WAIT_TIME*100)
-    assert mem[RAM_OFS] == 0
-
-
 
 if __name__=="__main__":
   # call the main function
