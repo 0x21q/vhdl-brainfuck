@@ -325,12 +325,12 @@ begin
 end behavioral;
 
 architecture behavioral of pc is
-  signal pc_val: std_logic_vector(12 downto 0);
+  signal pc_val: std_logic_vector(11 downto 0);
 begin
   pc: process(CLK, RESET)
   begin
     if RESET = '1' then
-      pc_val <= "0000000000000";
+      pc_val <= x"000";
     elsif rising_edge(CLK) then
       if IN_INC = '1' then
         pc_val <= pc_val + 1;
@@ -339,16 +339,16 @@ begin
       end if;
     end if;
   end process;
-  OUT_PC <= pc_val;
+  OUT_PC <= "0" & pc_val;
 end behavioral;
 
 architecture behavioral of ptr is
-  signal ptr_val: std_logic_vector(12 downto 0);
+  signal ptr_val: std_logic_vector(11 downto 0);
 begin
   ptr: process(CLK, RESET)
   begin
     if RESET = '1' then
-      ptr_val <= "1000000000000";
+      ptr_val <= x"000";
     elsif rising_edge(CLK) then
       if IN_INC = '1' then
         ptr_val <= ptr_val + 1;
@@ -357,7 +357,7 @@ begin
       end if;
     end if;
   end process;
-  OUT_PTR <= ptr_val;
+  OUT_PTR <= "1" & ptr_val;
 end behavioral;
 
 architecture dataflow of mx1 is
